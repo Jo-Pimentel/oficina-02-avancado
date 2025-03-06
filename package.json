@@ -1,0 +1,23 @@
+{
+  "name": "oficina-02-avancado",
+  "version": "1.0.0",
+  "description": "Repositório criado para a oficina 02 do módulo avançado de desenvolvimento full-Stack feito pelo capacita Brasil. Com o objetivo de conectar-se a um banco de dados de uma escola.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jo-Pimentel/oficina-02-avancado.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jo-Pimentel/oficina-02-avancado/issues"
+  },
+  "homepage": "https://github.com/Jo-Pimentel/oficina-02-avancado#readme",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
