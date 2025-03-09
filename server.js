@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.json());
+
 app.get('/', async (req, res) => {
     try {
         const alunos = await prisma.aluno.findMany();
@@ -59,7 +61,7 @@ app.get('/', async (req, res) => {
 
         html += `
             </table> <br>
-            <button onclick="localizacao.html='/novo-aluno"> Adicionar novo aluno </button>
+            <button onclick="location.href='/novo-aluno'"> Adicionar novo aluno </button>
         </body>
         </html>`;
 
@@ -69,6 +71,79 @@ app.get('/', async (req, res) => {
         console.error(error);
         res.status(500).send('Erro ao buscar dados dos alunos.');
     };
+});
+
+app.get('/novo-aluno', (req, res) => {
+    const html = `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Inserir novos dados </title>
+        <style>
+            body {
+                font-family: Berlin Sans FB;
+            }
+            .formulario-novo-aluno {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="div-do-h1">
+            <h1 align="center"> Inserção de novos dados para alunos </h1>
+        </div>
+        <div class="formulario-novo-aluno">
+            <form action="/novo-aluno" method="post">
+                <input type="text" id="nome" placeholder="nome do aluno" name="nome" required><br><br>
+                <input type="text" id="email" placeholder="email do aluno" name="email" required><br><br>
+                <input type="number" id="idade" placeholder="idade do aluno" name="idade" required><br><br>
+
+                <button type="submit"> Adcionar aluno </button>
+            </form><br>
+
+            <button onclick="location.href='/'"> Retornar a lista de alunos </button>
+        </div>
+    </body>
+    </html>`;
+
+    res.send(html);
+});
+
+app.post('/novo-aluno', async (req, res) => {
+    const { nome, email, idade } = req.body;
+    try {
+      await prisma.aluno.create({
+        data: {
+          nome,
+          email,
+          idade: parseInt(idade)
+        }
+      });
+      
+      res.redirect('/');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Erro ao adicionar o aluno.');
+    }
+  });
+  
+
+app.post('/remover-aluno', async(req, res) => {
+    const { id } = req.body;
+    try{
+        await prisma.aluno.delete({
+            where: { id: parseInt(id) }
+        });
+
+        res.redirect('/');
+    } catch(erro) {
+        console.error(erro);
+        res.status(500).send("Erro ao remover o aluno do servidor.");
+    }
 });
 
 const porta = 3000;
