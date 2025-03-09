@@ -61,7 +61,8 @@ app.get('/', async (req, res) => {
 
         html += `
             </table> <br>
-            <button onclick="location.href='/novo-aluno'"> Adicionar novo aluno </button>
+            <button onclick="location.href='/novo-aluno'"> Adicionar novo aluno </button><br><br>
+            <button onclick="location.href='/professores'"> Lista de professores </button><br><br>
         </body>
         </html>`;
 
@@ -120,8 +121,8 @@ app.post('/novo-aluno', async (req, res) => {
         data: {
           nome,
           email,
-          idade: parseInt(idade)
-        }
+          idade: parseInt(idade),
+        },
       });
       
       res.redirect('/');
@@ -144,6 +145,71 @@ app.post('/remover-aluno', async(req, res) => {
         console.error(erro);
         res.status(500).send("Erro ao remover o aluno do servidor.");
     }
+});
+
+app.get('/professores', async (req, res) => {
+    try {
+        const professores = await prisma.professor.findMany();
+
+        let html = `
+        <!DOCTYPE html>
+        <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title> Lista de professores </title>
+                <style>
+                    body{
+                        margin: 0;
+                        padding: 0;
+                        font-family: Berlin Sans FB;
+                    }
+
+                    table, th, tr, td {
+                        border: solid 4px;
+                    }
+                </style>
+            </head>
+            <body>
+                <table align="center">
+                    <th colspan="5"> Lista dos professores da escola </th>
+
+                    <tr>
+                        <th> ID </th>
+                        <th> Nome </th>
+                        <th> Telefone </th>
+                        <th> Idade </th>
+                        <th> Ações </th>
+                    </tr>`;
+
+        professores.forEach(professor => {
+            html += `
+            <tr>
+                <td> ${professor.id} </td>
+                <td> ${professor.nome} </td>
+                <td> ${professor.telefone} </td>
+                <td> ${professor.idade} </td>
+                <td>
+                    <form action="/remover-aluno" method="POST" style="display:inline;">
+                        <input type="hidden" name="id" value="${professor.id}">
+                        <button type="submit"> Remover </button>
+                    </form>
+                </td>
+            </tr>`;
+        });
+
+        html += `
+            </table> <br>
+            <button onclick="location.href='/novo-professor'"> Adicionar novo professor </button><br><br>
+        </body>
+        </html>`;
+
+    res.send(html);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erro ao buscar dados dos professores.');
+    };
 });
 
 const porta = 3000;
