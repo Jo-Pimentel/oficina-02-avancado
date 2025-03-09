@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    align-content: center;
+}
+
+table, th, tr, td {
+    border: solid 40px;
+}
