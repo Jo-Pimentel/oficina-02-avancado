@@ -143,7 +143,7 @@ app.post('/remover-aluno', async(req, res) => {
         res.redirect('/');
     } catch(erro) {
         console.error(erro);
-        res.status(500).send("Erro ao remover o aluno do servidor.");
+        res.status(100).send("Erro ao remover o aluno do servidor.");
     }
 });
 
@@ -190,7 +190,7 @@ app.get('/professores', async (req, res) => {
                 <td> ${professor.telefone} </td>
                 <td> ${professor.idade} </td>
                 <td>
-                    <form action="/remover-aluno" method="POST" style="display:inline;">
+                    <form action="/remover-professor" method="POST" style="display:inline;">
                         <input type="hidden" name="id" value="${professor.id}">
                         <button type="submit"> Remover </button>
                     </form>
@@ -201,15 +201,87 @@ app.get('/professores', async (req, res) => {
         html += `
             </table> <br>
             <button onclick="location.href='/novo-professor'"> Adicionar novo professor </button><br><br>
+            <button onclick="location.href='/'"> Voltar para a lista de alunos </button><br><br>
         </body>
         </html>`;
-
     res.send(html);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send('Erro ao buscar dados dos professores.');
+        res.status(200).send('Erro ao buscar dados dos professores.');
     };
+});
+
+app.get('/novo-professor', (req, res) => {
+    const html = `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> Inserir novos dados </title>
+        <style>
+            body {
+                font-family: Berlin Sans FB;
+            }
+            .formulario-novo-professor {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="div-do-h1">
+            <h1 align="center"> Inserção de novos dados para professores </h1>
+        </div>
+        <div class="formulario-novo-professor">
+            <form action="/novo-professor" method="post">
+                <input type="text" id="nome" placeholder="nome do professor" name="nome" required><br><br>
+                <input type="text" id="telefone" placeholder="telefone do professor" name="telefone" required><br><br>
+                <input type="number" id="idade" placeholder="idade do professor" name="idade" required><br><br>
+
+                <button type="submit"> Adcionar professor </button>
+            </form><br>
+
+            <button onclick="location.href='/professores'"> Retornar a lista de professores </button>
+        </div>
+    </body>
+    </html>`;
+
+    res.send(html);
+});
+
+app.post('/novo-professor', async (req, res) => {
+    const { nome, telefone, idade } = req.body;
+    try {
+      await prisma.professor.create({
+        data: {
+          nome,
+          telefone,
+          idade,
+        },
+      });
+      
+      res.redirect('/professores');
+    } catch (error) {
+      console.error(error);
+      res.status(300).send('Erro ao adicionar o professor.');
+    }
+  });
+
+  app.post('/remover-professor', async(req, res) => {
+    const { id } = req.body;
+    try{
+        await prisma.professor.delete({
+            where: { id: parseInt(id) }
+        });
+
+        res.redirect('/profesores');
+    } catch(erro) {
+        console.error(erro);
+        res.status(400).send("Erro ao remover o professor do servidor.");
+    }
 });
 
 const porta = 3000;
