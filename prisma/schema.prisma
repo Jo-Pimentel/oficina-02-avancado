@@ -32,5 +32,9 @@ model professor {
 model boletim {
   id        Int       @id @default(autoincrement())
   aluno_id  Int
-  media_final   Int
+  nota_matematica   Int
+  nota_portugues   Int
+  nota_geografia   Int
+  nota_historia   Int
+  nota_biologia   Int
 }
