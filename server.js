@@ -33,27 +33,27 @@ app.get('/', async (req, res) => {
             </head>
             <body>
                 <table align="center">
-                    <th colspan="5"> Lista dos alunos matriculados </th>
+                    <th colspan="5">Lista dos alunos matriculados</th>
 
                     <tr>
-                        <th> ID </th>
-                        <th> Nome </th>
-                        <th> Email </th>
-                        <th> Idade </th>
-                        <th> Ações </th>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Idade</th>
+                        <th>Ações</th>
                     </tr>`;
 
         alunos.forEach(aluno => {
             html += `
             <tr>
-                <td> ${aluno.id} </td>
-                <td> ${aluno.nome} </td>
-                <td> ${aluno.email} </td>
-                <td> ${aluno.idade} </td>
+                <td>${aluno.id}</td>
+                <td>${aluno.nome}</td>
+                <td>${aluno.email}</td>
+                <td>${aluno.idade}</td>
                 <td>
                     <form action="/remover-aluno" method="POST" style="display:inline;">
                         <input type="hidden" name="id" value="${aluno.id}">
-                        <button type="submit"> Remover </button>
+                        <button type="submit">Remover</button>
                     </form>
                 </td>
             </tr>`;
@@ -104,7 +104,7 @@ app.get('/novo-aluno', (req, res) => {
                 <input type="text" id="email" placeholder="email do aluno" name="email" required><br><br>
                 <input type="number" id="idade" placeholder="idade do aluno" name="idade" required><br><br>
 
-                <button type="submit"> Adcionar aluno </button>
+                <button type="submit" onsubmit> Adcionar aluno </button>
             </form><br>
 
             <button onclick="location.href='/'"> Retornar a lista de alunos </button>
@@ -209,7 +209,7 @@ app.get('/professores', async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(200).send('Erro ao buscar dados dos professores.');
+        res.status(500).send('Erro ao buscar dados dos professores.');
     };
 });
 
@@ -259,8 +259,8 @@ app.post('/novo-professor', async (req, res) => {
       await prisma.professor.create({
         data: {
           nome,
-          telefone,
-          idade,
+          telefone: parseInt(telefone),
+          idade: parseInt(idade),
         },
       });
       
